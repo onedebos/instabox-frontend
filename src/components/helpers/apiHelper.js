@@ -1,3 +1,3 @@
-const API_URL = "https://instabox-api.herokuapp.com/pictures";
+const API_URL = "https://instabox-api.herokuapp.com";
 
 export default API_URL;
