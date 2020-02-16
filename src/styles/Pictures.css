@@ -1,0 +1,30 @@
+@media screen and (min-device-width: 350px) and (max-device-width: 575px) {
+  .MenuBar {
+    display: flex;
+    border-bottom: 1px solid grey;
+    position: fixed;
+    background-color: white;
+    z-index: 1;
+    top: 0;
+    width: 100vw;
+  }
+
+  .LogoIcon {
+    width: 100px;
+  }
+
+  .LogoIconDiv {
+    width: 260px;
+    margin-left: 0.5em;
+  }
+
+  .LeftMenu {
+    display: flex;
+    margin-top: 1em;
+    margin-left: 1em;
+  }
+
+  .SendIcon {
+    margin-top: 1em;
+  }
+}

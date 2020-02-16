@@ -1,0 +1,61 @@
+@media screen and (min-device-width: 350px) and (max-device-width: 575px) {
+  .UserAvatar {
+    width: 40px;
+    object-fit: cover;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .UserAv {
+    height: 10px;
+    margin: 4.5em 0 0 1em;
+  }
+
+  .UserName {
+    margin-left: 5em;
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+
+  .Dots {
+    position: absolute;
+    right: 0;
+    margin-right: 2em;
+    margin-top: -0.5em;
+  }
+
+  .MainPicture {
+    object-fit: cover;
+    width: 370px;
+    height: 400px;
+    margin-top: 1.5em;
+  }
+
+  .PictureIcons {
+    margin-left: 1em;
+    margin-top: 0.5em;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 1em;
+  }
+
+  .PictureIconsIcon {
+    margin-right: 0.3em;
+  }
+
+  .caption {
+    margin: 0 0 0 1em;
+  }
+
+  .captionSp {
+    margin-left: 0.3em;
+  }
+
+  .timeSincePost {
+    color: grey;
+    font-size: 0.8em;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 2em;
+  }
+}
