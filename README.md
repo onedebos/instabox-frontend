@@ -1,6 +1,6 @@
 # InstaBox
 
-> This is the React frontend app that serves a stripped down instagram clone built using react. The full medium article for this tutorial can be found [here]().
+> This is the React app for a stripped down instagram clone built using react. The full medium article for this tutorial can be found [here](). This app is designed for mobile view.
 
 ![screenshot](./app_screenshot.png)
 
@@ -17,7 +17,7 @@ by React Views.
 
 ## Live Demo
 
-[Live Demo Link]()
+[Live Demo Link](https://hardcore-blackwell-67aee1.netlify.com/)
 
 ## Front-end Repo
 

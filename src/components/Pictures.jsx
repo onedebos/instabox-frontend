@@ -53,9 +53,11 @@ export default class Pictures extends Component {
       likes: likes + 1
     };
 
-    axios.put(`${API_URL}/pictures/${pid}`, body).then(() => {
-      this.getUpdatedPictures();
-    });
+    axios
+      .put(`${API_URL}/pictures/${pid}`, body, { withCredentials: true })
+      .then(() => {
+        this.getUpdatedPictures();
+      });
   }
   render() {
     const { pictures } = this.state;
