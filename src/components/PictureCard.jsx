@@ -8,7 +8,6 @@ import {
   faBookmark
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TimeAgo from "react-timeago";
 
 export default function PictureCard({
   displayPicture,
@@ -16,7 +15,9 @@ export default function PictureCard({
   picture,
   caption,
   dateCreated,
-  likes
+  likes,
+  increaseLikes,
+  pid
 }) {
   return (
     <div className="PictureCardWrapper">
@@ -37,24 +38,23 @@ export default function PictureCard({
           <FontAwesomeIcon
             icon={faHeart}
             size="2x"
-            color="grey"
-            className="PictureIconsIcon"
+            className={`PictureIconsIcon HeartIcon-${pid}`}
+            onClick={increaseLikes}
+            pid={pid}
           />
           <FontAwesomeIcon
             icon={faComment}
             size="2x"
-            color="grey"
             className="PictureIconsIcon"
           />
           <FontAwesomeIcon
             icon={faPaperPlane}
             size="2x"
-            color="grey"
             className="PictureIconsIcon"
           />
         </div>
         <div className="BookMarkIcon">
-          <FontAwesomeIcon icon={faBookmark} size="2x" color="grey" />
+          <FontAwesomeIcon icon={faBookmark} size="2x" />
         </div>
       </div>
       <div className="caption">
@@ -62,14 +62,6 @@ export default function PictureCard({
           <strong>{uName}</strong>
           <span className="captionSp">{caption}</span>
         </p>
-        <div className="timeSincePost">
-          <div>
-            <TimeAgo date={dateCreated} />
-          </div>
-          <div>
-            <span className="Likes">{likes} likes</span>
-          </div>
-        </div>
       </div>
     </div>
   );
