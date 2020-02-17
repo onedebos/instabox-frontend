@@ -1,0 +1,29 @@
+@media screen and (min-device-width: 350px) and (max-device-width: 575px) {
+  .CommentsBox {
+    margin: -0.5em 2em;
+  }
+
+  .CommentsView {
+    color: grey;
+  }
+
+  .Comment {
+    margin-top: -0.5em;
+  }
+
+  .CommentName {
+    font-weight: 600;
+  }
+
+  .CommentComment {
+    font-weight: 400;
+    margin-left: 0.5em;
+  }
+
+  .CommentBox {
+    border: none;
+    font-size: 1em;
+    margin-top: -1em;
+    margin-bottom: 1em;
+  }
+}

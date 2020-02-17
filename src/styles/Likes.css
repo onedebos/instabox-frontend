@@ -7,4 +7,9 @@
     margin-right: 2em;
     margin-left: 1.5em;
   }
+
+  .Likes {
+    color: black;
+    font-weight: 600;
+  }
 }

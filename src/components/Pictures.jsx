@@ -4,6 +4,8 @@ import API_URL from "./helpers/apiHelper";
 import "../styles/Pictures.css";
 import PictureCard from "./PictureCard";
 import Likes from "./Likes";
+import uuid from "uuid";
+import Comments from "./Comments";
 import { faCamera, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -33,7 +35,6 @@ export default class Pictures extends Component {
     const pid = e.target.getAttribute("pid");
     const heart = document.querySelector(`.HeartIcon-${pid}`);
     heart.setAttribute("color", "red");
-    console.log("pid", pid);
     this.getPictureClicked(pid);
   }
 
@@ -63,7 +64,7 @@ export default class Pictures extends Component {
     const { pictures } = this.state;
 
     const displayAllPictures = pictures.map(picture => (
-      <div>
+      <div key={uuid()}>
         <PictureCard
           key={picture.id}
           uName={picture.created_by.toLowerCase()}
@@ -73,6 +74,7 @@ export default class Pictures extends Component {
           increaseLikes={this.increaseLikes}
           pid={picture.id}
         />
+        <Comments pid={picture.id} />
         <Likes dateCreated={picture.created_at} likes={picture.likes} />
       </div>
     ));
