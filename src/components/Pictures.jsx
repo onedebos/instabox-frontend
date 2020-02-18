@@ -4,7 +4,7 @@ import API_URL from "./helpers/apiHelper";
 import "../styles/Pictures.css";
 import PictureCard from "./PictureCard";
 import Likes from "./Likes";
-// import Comments from "./Comments";
+import Comments from "./Comments";
 import uuid from "uuid";
 import { faCamera, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -48,11 +48,9 @@ export default class Pictures extends Component {
       .get(`${API_URL}/pictures/${pid}`)
       .then(response => {
         this.setState({ likes: response.data.likes });
-        console.log("check if liked", response.data.liked);
         if (response.data.liked === false) {
           this.increase(pid);
         } else {
-          console.log("else", response.data.liked);
           this.setState({ notification: "You cannot like a picture twice." });
           setTimeout(() => this.setState({ notification: "" }), 4000);
         }
@@ -90,6 +88,10 @@ export default class Pictures extends Component {
           increaseLikes={this.increaseLikes}
           pid={picture.id}
         />
+        <div className="CommentComponent">
+          <Comments pid={picture.id} />
+        </div>
+
         <Likes dateCreated={picture.created_at} likes={picture.likes} />
       </div>
     ));

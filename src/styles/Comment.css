@@ -1,0 +1,18 @@
+.ShowComment {
+  margin-left: 1.1em;
+  margin-top: 0.2em;
+}
+
+.comment {
+  margin-left: 0.5em;
+}
+
+.view {
+  margin-top: -0.8em;
+  margin-left: 1em;
+  color: grey;
+}
+
+.commentName {
+  margin-top: -2.5em;
+}
