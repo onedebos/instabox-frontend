@@ -27,4 +27,17 @@
   .SendIcon {
     margin-top: 1em;
   }
+
+  .displayNot {
+    color: black;
+    background-color: greenyellow;
+    bottom: 0;
+    width: 100vw;
+    text-align: center;
+    position: fixed;
+  }
+
+  .notification {
+    z-index: 3;
+  }
 }
