@@ -18,18 +18,11 @@ export default class Pictures extends Component {
       comments: [],
       addedComments: false,
       likes: 0,
-      color: "black",
+
       liked: false,
       notification: ""
     };
     this.increaseLikes = this.increaseLikes.bind(this);
-    this.handler = this.handler.bind(this);
-  }
-
-  handler(result) {
-    this.setState({
-      addedComments: result
-    });
   }
 
   componentDidMount() {
@@ -37,14 +30,12 @@ export default class Pictures extends Component {
       .getPictures()
       .then(response => {
         this.setState({ pictures: response.data });
-        console.log(response.data);
       })
       .catch(error => console.log(error));
   }
 
   increaseLikes(e) {
     const pid = e.currentTarget.getAttribute("pid");
-    this.setState({ color: "red" });
     document.querySelector(`.HeartIcon-${pid}`).style.color = "green";
 
     this.getPictureClicked(pid);
@@ -93,7 +84,7 @@ export default class Pictures extends Component {
           pid={picture.id}
         />
 
-        {/* <Comments pid={picture.id} handler={this.handler} /> */}
+        <Comments pid={picture.id} />
 
         <Likes
           dateCreated={picture.created_at}

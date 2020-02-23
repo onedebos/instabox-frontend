@@ -19,24 +19,39 @@ export default class Comments extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
+
+  CancelToken = axios.CancelToken;
+  source = this.CancelToken.source();
+
+  abortController = new AbortController();
+
   componentDidMount() {
     const { pid } = this.props;
-    axios.get(`${API_URL}/pictures/${pid}/comments`).then(response => {
-      this.setState({
-        comments: response.data
+    axios
+      .get(`${API_URL}/pictures/${pid}/comments`, {
+        cancelToken: this.source.token
+      })
+      .then(response => {
+        this.setState({
+          comments: response.data
+        });
       });
-    });
   }
 
   handleDelete(e) {
     const { pid } = this.props;
     const cid = e.currentTarget.getAttribute("cid");
 
-    axios.delete(`${API_URL}/pictures/${pid}/comments/${cid}`).then(
-      this.setState({
-        notification: "Comment deleted"
+    axios
+      .delete(`${API_URL}/pictures/${pid}/comments/${cid}`, {
+        cancelToken: this.source.token
       })
-    );
+      .then(response =>
+        this.setState({
+          comments: response.data,
+          notification: "Comment deleted"
+        })
+      );
 
     setTimeout(() => {
       this.setState({
@@ -47,22 +62,24 @@ export default class Comments extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const { name, comment } = this.state;
-    const { pid, handler } = this.props;
+    const { pid } = this.props;
 
     const body = {
       name,
       comment
     };
-    axios
-      .post(`${API_URL}/pictures/${pid}/comments`, body)
-      .then(response => response.data);
-    handler(true);
+    axios.post(`${API_URL}/pictures/${pid}/comments`, body).then(response => {
+      this.setState({ comments: response.data });
+    });
 
     this.setState({ name: "", comment: "" });
-    handler(false);
   }
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  componentWillUnmount() {
+    this.source.cancel("Operation canceled by the user.");
   }
   render() {
     const { comments, notification } = this.state;
