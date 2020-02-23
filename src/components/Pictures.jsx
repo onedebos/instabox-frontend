@@ -6,6 +6,7 @@ import PictureCard from "./PictureCard";
 import Likes from "./Likes";
 import Comments from "./Comments";
 import uuid from "uuid";
+import getPic from "./apiCalls";
 import { faCamera, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -14,13 +15,20 @@ export default class Pictures extends Component {
     super(props);
     this.state = {
       pictures: [],
-      comments: {},
+      addedComments: false,
       likes: 0,
       color: "black",
       liked: false,
       notification: ""
     };
     this.increaseLikes = this.increaseLikes.bind(this);
+    this.handler = this.handler.bind(this);
+  }
+
+  handler(result) {
+    this.setState({
+      addedComments: result
+    });
   }
 
   componentDidMount() {
@@ -28,10 +36,11 @@ export default class Pictures extends Component {
   }
 
   getUpdatedPictures() {
-    axios
-      .get(`${API_URL}/pictures`)
+    getPic
+      .getPictures()
       .then(response => {
         this.setState({ pictures: response.data });
+        console.log(response.data);
       })
       .catch(error => console.log(error));
   }
@@ -69,11 +78,6 @@ export default class Pictures extends Component {
     });
   }
 
-  loadComments(pid) {
-    axios
-      .get(`${API_URL}/${pid}/comments`)
-      .then(response => console.log(response.data));
-  }
   render() {
     const { pictures, notification } = this.state;
 
@@ -88,11 +92,14 @@ export default class Pictures extends Component {
           increaseLikes={this.increaseLikes}
           pid={picture.id}
         />
-        <div className="CommentComponent">
-          <Comments pid={picture.id} />
-        </div>
 
-        <Likes dateCreated={picture.created_at} likes={picture.likes} />
+        <Comments pid={picture.id} handler={this.handler} />
+
+        <Likes
+          dateCreated={picture.created_at}
+          likes={picture.likes}
+          increaseLikes={this.increaseLikes}
+        />
       </div>
     ));
 

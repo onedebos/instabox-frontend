@@ -3,16 +3,21 @@ import API_URL from "./helpers/apiHelper";
 import axios from "axios";
 import "../styles/Comment.css";
 import uuid from "uuid";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export default class Comments extends Component {
   constructor(props) {
     super(props);
     this.state = {
       comments: [],
       name: "",
-      comment: ""
+      comment: "",
+      notification: ""
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
   componentDidMount() {
     const { pid } = this.props;
@@ -23,39 +28,76 @@ export default class Comments extends Component {
     });
   }
 
+  handleDelete(e) {
+    const { pid } = this.props;
+    const cid = e.currentTarget.getAttribute("cid");
+
+    axios.delete(`${API_URL}/pictures/${pid}/comments/${cid}`).then(
+      this.setState({
+        notification: "Comment deleted"
+      })
+    );
+
+    setTimeout(() => {
+      this.setState({
+        notification: ""
+      });
+    }, 3000);
+  }
   handleSubmit(e) {
     e.preventDefault();
     const { name, comment } = this.state;
-    const { pid } = this.props;
+    const { pid, handler } = this.props;
+
     const body = {
       name,
       comment
     };
     axios
       .post(`${API_URL}/pictures/${pid}/comments`, body)
-      .then(response => console.log(response.data));
+      .then(response => response.data);
+    handler(true);
 
     this.setState({ name: "", comment: "" });
+    handler(false);
   }
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
   render() {
-    const { comments } = this.state;
+    const { comments, notification } = this.state;
     const displayAllComments = comments.map(comment => (
       <div className="commentWrapper" key={uuid()}>
-        <p className="ShowComment">
-          <strong className="commentName">{comment.name}</strong>
-          <span className="comment">{comment.comment}</span>
-        </p>
+        <div className="ShowComment">
+          <div className="comments">
+            <strong className="commentName">{comment.name}</strong>
+            <span className="comment">{comment.comment}</span>
+          </div>
+          <div className="icon">
+            <FontAwesomeIcon
+              icon={faTrashAlt}
+              onClick={this.handleDelete}
+              cid={comment.id}
+            />
+          </div>
+        </div>
       </div>
     ));
 
     return (
       <div>
+        <div className="commentNot">
+          {notification.length === 0 ? (
+            ""
+          ) : (
+            <div className="commentDel">
+              <p>{notification}</p>
+            </div>
+          )}
+        </div>
         <div className="view">View all comments</div>
         {displayAllComments}
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className="commentForm">
           <input
             name="name"
             id="name"
@@ -63,6 +105,7 @@ export default class Comments extends Component {
             value={this.state.name}
             onChange={this.handleChange}
             placeholder="Your name: "
+            className="commentInput"
           ></input>
           <input
             name="comment"
@@ -71,8 +114,14 @@ export default class Comments extends Component {
             value={this.state.comment}
             onChange={this.handleChange}
             placeholder="Your comment: "
+            className="commentInput"
           ></input>
-          <button type="submit"></button>
+          <div>
+            {" "}
+            <small>hit enter to add comment</small>
+          </div>
+
+          <button type="submit" className="submitComment"></button>
         </form>
       </div>
     );

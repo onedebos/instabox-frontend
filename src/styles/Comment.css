@@ -1,6 +1,9 @@
 .ShowComment {
   margin-left: 1.1em;
   margin-top: 0.2em;
+  display: flex;
+  justify-content: space-between;
+  margin-right: 1.5em;
 }
 
 .comment {
@@ -15,4 +18,36 @@
 
 .commentName {
   margin-top: -2.5em;
+}
+
+.commentForm {
+  margin-left: 1em;
+}
+
+.commentInput {
+  border: none;
+  border-bottom: 1px solid black;
+  margin-bottom: 0.5em;
+}
+
+.submitComment {
+  visibility: hidden;
+}
+
+.commentNot {
+  position: fixed;
+  background-color: red;
+  bottom: 0;
+  text-align: center;
+  color: white;
+  width: 100%;
+}
+
+.commentDel {
+  padding: 1em;
+  z-index: 2;
+}
+
+.commentDel p {
+  font-weight: 700;
 }
