@@ -15,38 +15,27 @@ export default class Pictures extends Component {
     super(props);
     this.state = {
       pictures: [],
+      comments: [],
       addedComments: false,
       likes: 0,
-      color: "black",
+
       liked: false,
       notification: ""
     };
     this.increaseLikes = this.increaseLikes.bind(this);
-    this.handler = this.handler.bind(this);
-  }
-
-  handler(result) {
-    this.setState({
-      addedComments: result
-    });
   }
 
   componentDidMount() {
-    this.getUpdatedPictures();
-  }
-
-  getUpdatedPictures() {
     getPic
       .getPictures()
       .then(response => {
         this.setState({ pictures: response.data });
-        console.log(response.data);
       })
       .catch(error => console.log(error));
   }
+
   increaseLikes(e) {
-    const pid = e.target.getAttribute("pid");
-    this.setState({ color: "red" });
+    const pid = e.currentTarget.getAttribute("pid");
     document.querySelector(`.HeartIcon-${pid}`).style.color = "green";
 
     this.getPictureClicked(pid);
@@ -73,11 +62,11 @@ export default class Pictures extends Component {
       likes: likes + 1
     };
 
-    axios
-      .put(`${API_URL}/pictures/${pid}`, body, { withCredentials: true })
-      .then(() => {
-        this.getUpdatedPictures();
+    axios.put(`${API_URL}/pictures/${pid}`, body).then(response => {
+      this.setState({
+        pictures: response.data
       });
+    });
   }
 
   render() {
@@ -95,7 +84,7 @@ export default class Pictures extends Component {
           pid={picture.id}
         />
 
-        <Comments pid={picture.id} handler={this.handler} />
+        <Comments pid={picture.id} />
 
         <Likes
           dateCreated={picture.created_at}
