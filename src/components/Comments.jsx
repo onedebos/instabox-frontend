@@ -32,9 +32,8 @@ export default class Comments extends Component {
     const { pid } = this.props;
     const cid = e.currentTarget.getAttribute("cid");
 
-    axios.delete(`${API_URL}/pictures/${pid}/comments/${cid}`).then(response =>
+    axios.delete(`${API_URL}/pictures/${pid}/comments/${cid}`).then(
       this.setState({
-        // comments: response.data,
         notification: "Comment deleted"
       })
     );
@@ -48,17 +47,19 @@ export default class Comments extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const { name, comment } = this.state;
-    const { pid } = this.props;
+    const { pid, handler } = this.props;
 
     const body = {
       name,
       comment
     };
-    axios.post(`${API_URL}/pictures/${pid}/comments`, body).then(response => {
-      this.setState({ comments: response.data });
-    });
+    axios
+      .post(`${API_URL}/pictures/${pid}/comments`, body)
+      .then(response => response.data);
+    handler(true);
 
     this.setState({ name: "", comment: "" });
+    handler(false);
   }
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });

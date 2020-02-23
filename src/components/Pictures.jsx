@@ -15,22 +15,26 @@ export default class Pictures extends Component {
     super(props);
     this.state = {
       pictures: [],
+      comments: [],
+      addedComments: false,
       likes: 0,
       color: "black",
       liked: false,
       notification: ""
     };
     this.increaseLikes = this.increaseLikes.bind(this);
+    this.handler = this.handler.bind(this);
   }
 
-  CancelToken = axios.CancelToken;
-  source = this.CancelToken.source();
-
-  abortController = new AbortController();
+  handler(result) {
+    this.setState({
+      addedComments: result
+    });
+  }
 
   componentDidMount() {
-    axios
-      .get(`${API_URL}/pictures/`, { cancelToken: this.source.token })
+    getPic
+      .getPictures()
       .then(response => {
         this.setState({ pictures: response.data });
         console.log(response.data);
@@ -48,7 +52,7 @@ export default class Pictures extends Component {
 
   getPictureClicked(pid) {
     axios
-      .get(`${API_URL}/pictures/${pid}`, { cancelToken: this.source.token })
+      .get(`${API_URL}/pictures/${pid}`)
       .then(response => {
         this.setState({ likes: response.data.likes });
         if (response.data.liked === false) {
@@ -74,10 +78,6 @@ export default class Pictures extends Component {
     });
   }
 
-  componentWillUnmount() {
-    this.source.cancel("Operation canceled by the user.");
-  }
-
   render() {
     const { pictures, notification } = this.state;
 
@@ -93,7 +93,7 @@ export default class Pictures extends Component {
           pid={picture.id}
         />
 
-        <Comments pid={picture.id} />
+        {/* <Comments pid={picture.id} handler={this.handler} /> */}
 
         <Likes
           dateCreated={picture.created_at}
