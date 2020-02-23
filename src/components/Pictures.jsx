@@ -4,8 +4,9 @@ import API_URL from "./helpers/apiHelper";
 import "../styles/Pictures.css";
 import PictureCard from "./PictureCard";
 import Likes from "./Likes";
-import uuid from "uuid";
 import Comments from "./Comments";
+import uuid from "uuid";
+import getPic from "./apiCalls";
 import { faCamera, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -14,9 +15,20 @@ export default class Pictures extends Component {
     super(props);
     this.state = {
       pictures: [],
-      likes: 0
+      addedComments: false,
+      likes: 0,
+      color: "black",
+      liked: false,
+      notification: ""
     };
     this.increaseLikes = this.increaseLikes.bind(this);
+    this.handler = this.handler.bind(this);
+  }
+
+  handler(result) {
+    this.setState({
+      addedComments: result
+    });
   }
 
   componentDidMount() {
@@ -24,17 +36,19 @@ export default class Pictures extends Component {
   }
 
   getUpdatedPictures() {
-    axios
-      .get(`${API_URL}/pictures`)
+    getPic
+      .getPictures()
       .then(response => {
         this.setState({ pictures: response.data });
+        console.log(response.data);
       })
       .catch(error => console.log(error));
   }
   increaseLikes(e) {
     const pid = e.target.getAttribute("pid");
-    const heart = document.querySelector(`.HeartIcon-${pid}`);
-    heart.setAttribute("color", "red");
+    this.setState({ color: "red" });
+    document.querySelector(`.HeartIcon-${pid}`).style.color = "green";
+
     this.getPictureClicked(pid);
   }
 
@@ -43,7 +57,12 @@ export default class Pictures extends Component {
       .get(`${API_URL}/pictures/${pid}`)
       .then(response => {
         this.setState({ likes: response.data.likes });
-        this.increase(pid);
+        if (response.data.liked === false) {
+          this.increase(pid);
+        } else {
+          this.setState({ notification: "You cannot like a picture twice." });
+          setTimeout(() => this.setState({ notification: "" }), 4000);
+        }
       })
       .catch(error => console.log(error));
   }
@@ -60,8 +79,9 @@ export default class Pictures extends Component {
         this.getUpdatedPictures();
       });
   }
+
   render() {
-    const { pictures } = this.state;
+    const { pictures, notification } = this.state;
 
     const displayAllPictures = pictures.map(picture => (
       <div key={uuid()}>
@@ -74,14 +94,27 @@ export default class Pictures extends Component {
           increaseLikes={this.increaseLikes}
           pid={picture.id}
         />
-        <Comments pid={picture.id} />
-        <Likes dateCreated={picture.created_at} likes={picture.likes} />
+
+        <Comments pid={picture.id} handler={this.handler} />
+
+        <Likes
+          dateCreated={picture.created_at}
+          likes={picture.likes}
+          increaseLikes={this.increaseLikes}
+        />
       </div>
     ));
 
     return (
       <div>
         <main className="PicturesWrapper">
+          <div className="displayNot">
+            {notification.length === 0 ? (
+              ""
+            ) : (
+              <div className="notification">{notification}</div>
+            )}
+          </div>
           <div className="MenuBar">
             <div className="LeftMenu">
               <div className="CameraIcon">
@@ -104,6 +137,7 @@ export default class Pictures extends Component {
               <FontAwesomeIcon size="2x" icon={faPaperPlane} color="grey" />
             </div>
           </div>
+
           {displayAllPictures}
         </main>
       </div>

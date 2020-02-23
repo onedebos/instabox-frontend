@@ -1,58 +1,127 @@
 import React, { Component } from "react";
 import API_URL from "./helpers/apiHelper";
-import uuid from "uuid";
 import axios from "axios";
-import "../styles/Comments.css";
+import "../styles/Comment.css";
+import uuid from "uuid";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default class Comments extends Component {
   constructor(props) {
     super(props);
     this.state = {
       comments: [],
-      addComment:'',
+      name: "",
+      comment: "",
+      notification: ""
     };
-    this.addComment = this.addComment.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
   componentDidMount() {
-    this.upDateComments();
-  }
-
-  upDateComments() {
     const { pid } = this.props;
-
     axios.get(`${API_URL}/pictures/${pid}/comments`).then(response => {
-      this.setState({ comments: response.data });
+      this.setState({
+        comments: response.data
+      });
     });
   }
 
-  addComment(e) {
-    const pid = e.target.getAttribute("pid");
-    this.setState({comment: commenting})
-    this.
+  handleDelete(e) {
+    const { pid } = this.props;
+    const cid = e.currentTarget.getAttribute("cid");
 
+    axios.delete(`${API_URL}/pictures/${pid}/comments/${cid}`).then(
+      this.setState({
+        notification: "Comment deleted"
+      })
+    );
+
+    setTimeout(() => {
+      this.setState({
+        notification: ""
+      });
+    }, 3000);
   }
+  handleSubmit(e) {
+    e.preventDefault();
+    const { name, comment } = this.state;
+    const { pid, handler } = this.props;
 
+    const body = {
+      name,
+      comment
+    };
+    axios
+      .post(`${API_URL}/pictures/${pid}/comments`, body)
+      .then(response => response.data);
+    handler(true);
+
+    this.setState({ name: "", comment: "" });
+    handler(false);
+  }
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
   render() {
-    const { comments } = this.state;
+    const { comments, notification } = this.state;
     const displayAllComments = comments.map(comment => (
-      <div key={uuid()} className="Comment">
-        <p className="CommentName">
-          {comment.name}
-          <span className="CommentComment">{comment.comment}</span>
-        </p>
+      <div className="commentWrapper" key={uuid()}>
+        <div className="ShowComment">
+          <div className="comments">
+            <strong className="commentName">{comment.name}</strong>
+            <span className="comment">{comment.comment}</span>
+          </div>
+          <div className="icon">
+            <FontAwesomeIcon
+              icon={faTrashAlt}
+              onClick={this.handleDelete}
+              cid={comment.id}
+            />
+          </div>
+        </div>
       </div>
     ));
+
     return (
-      <div className="CommentsBox">
-        <p className="CommentsView">View all {comments.length} comments</p>
+      <div>
+        <div className="commentNot">
+          {notification.length === 0 ? (
+            ""
+          ) : (
+            <div className="commentDel">
+              <p>{notification}</p>
+            </div>
+          )}
+        </div>
+        <div className="view">View all comments</div>
         {displayAllComments}
-        <form className="AddComment" onSubmit={this.addComment}>
+        <form onSubmit={this.handleSubmit} className="commentForm">
           <input
+            name="name"
+            id="name"
             type="text"
-            name="commenting"
-            placeholder="Add a comment"
-            className="CommentBox"
-          />
+            value={this.state.name}
+            onChange={this.handleChange}
+            placeholder="Your name: "
+            className="commentInput"
+          ></input>
+          <input
+            name="comment"
+            id="comment"
+            type="text"
+            value={this.state.comment}
+            onChange={this.handleChange}
+            placeholder="Your comment: "
+            className="commentInput"
+          ></input>
+          <div>
+            {" "}
+            <small>hit enter to add comment</small>
+          </div>
+
+          <button type="submit" className="submitComment"></button>
         </form>
       </div>
     );
