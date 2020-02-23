@@ -15,6 +15,7 @@ export default class Pictures extends Component {
     super(props);
     this.state = {
       pictures: [],
+      comments: [],
       addedComments: false,
       likes: 0,
       color: "black",
@@ -32,10 +33,6 @@ export default class Pictures extends Component {
   }
 
   componentDidMount() {
-    this.getUpdatedPictures();
-  }
-
-  getUpdatedPictures() {
     getPic
       .getPictures()
       .then(response => {
@@ -44,8 +41,9 @@ export default class Pictures extends Component {
       })
       .catch(error => console.log(error));
   }
+
   increaseLikes(e) {
-    const pid = e.target.getAttribute("pid");
+    const pid = e.currentTarget.getAttribute("pid");
     this.setState({ color: "red" });
     document.querySelector(`.HeartIcon-${pid}`).style.color = "green";
 
@@ -73,8 +71,10 @@ export default class Pictures extends Component {
       likes: likes + 1
     };
 
-    axios.put(`${API_URL}/pictures/${pid}`, body).then(() => {
-      this.getUpdatedPictures();
+    axios.put(`${API_URL}/pictures/${pid}`, body).then(response => {
+      this.setState({
+        pictures: response.data
+      });
     });
   }
 
@@ -93,7 +93,7 @@ export default class Pictures extends Component {
           pid={picture.id}
         />
 
-        <Comments pid={picture.id} handler={this.handler} />
+        {/* <Comments pid={picture.id} handler={this.handler} /> */}
 
         <Likes
           dateCreated={picture.created_at}
